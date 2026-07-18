@@ -1,22 +1,42 @@
+import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from "express";
 import { users } from "./usersdata.js";
-import { router as usersRouter } from "./routers/users.router.js";
+import { router as usersRouter } from "./users/users.router.js";
+import { RequestContext } from "@mikro-orm/core";
+import { orm, syncSchema } from "./shared/orm.js";
+import { businessRouter } from './users/business.router.js';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors(
+  {
+    origin: 'localhost:5173'
+  }
+));
 app.use(express.json())
 
+app.use((req, _res, next) => {
+  console.log(req.method + ' ' + req.path);
+  next();
+})
+
+// Terminan middlewares base
+app.use((_req, _res, next) => {
+  RequestContext.create(orm.em, next);
+})
+// Arrancan middlewares de negocio
 
 const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['user_id'];
-  if (!authHeader) {
-    next("unauthorized");
-  }
+  // const authHeader = req.headers['user_id'];
+  // if (!authHeader) {
+  //   next("unauthorized");
+  // }
 
-  const currentUser: any = users.find(
-    (user) => (user.id === parseInt(authHeader! as string))
-  );
-  (req as any).currentUser = currentUser;
+  // const currentUser: any = users.find(
+  //   (user) => (user.id === parseInt(authHeader! as string))
+  // );
+  // (req as any).currentUser = currentUser;
 
   next();
 };
@@ -28,6 +48,7 @@ const loadBusiness = (req: Request, res: Response, next: NextFunction) => {
 };
 
 app.use('/users', isLoggedIn, usersRouter);
+app.use('/business', businessRouter);
 app.use('/business/:id/users', isLoggedIn, loadBusiness, usersRouter);
 
 
@@ -38,8 +59,9 @@ const handleError = (err: any, req: Request, res: Response, next: NextFunction) 
     next();
   }
 };
-
 app.use(handleError);
+
+await syncSchema();
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
