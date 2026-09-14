@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { User } from "./user.entity";
+import { User } from "./user.entity.js";
 import { orm } from "../shared/orm";
 import { generateJwtToken } from "../encode";
 import bcrypt from 'bcrypt';
