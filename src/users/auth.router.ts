@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { User } from "./user.entity.js";
-import { orm } from "../shared/orm";
-import { generateJwtToken } from "../encode";
+import { orm } from "../shared/orm.js";
+import { generateJwtToken } from "../encode.js";
 import bcrypt from 'bcrypt';
 
 const router = Router();
