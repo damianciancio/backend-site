@@ -4,10 +4,10 @@ import { User } from "./user.entity.js";
 
 @Entity()
 export class Business {
-  @PrimaryKey()
+  @PrimaryKey({ type: "integer" })
   id?: number;
 
-  @Property()
+  @Property({ type: "string" })
   description!: string;
 
   @OneToMany(() => User, user => user.business)

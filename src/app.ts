@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import { users } from "./usersdata.js";
 import { router as usersRouter } from "./users/users.router.js";
 import { RequestContext } from "@mikro-orm/core";
-import { orm, syncSchema } from "./shared/orm.js";
+import { orm, migrate } from "./shared/orm.js";
 import { businessRouter } from './users/business.router.js';
 import cors from 'cors';
 
@@ -61,7 +61,7 @@ const handleError = (err: any, req: Request, res: Response, next: NextFunction) 
 };
 app.use(handleError);
 
-await syncSchema();
+await migrate();
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

@@ -4,13 +4,13 @@ import { Rel } from "@mikro-orm/core";
 
 @Entity()
 export class User {
-  @PrimaryKey()  
+  @PrimaryKey({ type: "integer" })
   id?: number;
 
-  @Property({ nullable: false })
+  @Property({ type: "string", nullable: false })
   name!: string;
 
-  @Property({ nullable: false })
+  @Property({ type: "string", nullable: false })
   email!: string;
 
   @ManyToOne(() => Business, { nullable: true })
