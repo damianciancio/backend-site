@@ -7,7 +7,7 @@ const config = defineConfig({
   debug: true,
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
-  clientUrl: 'postgresql://dsw:dsw@localhost:9929/users_db',
+  clientUrl: process.env.DATABASE_URL,
   metadataProvider: ReflectMetadataProvider,
   schemaGenerator: {
     //never in production
