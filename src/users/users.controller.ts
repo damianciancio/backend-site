@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { User } from "./user.entity.js";
 import { orm } from "../shared/orm.js";
 import { Business } from "./business.entity.js";
+import bcrypt from 'bcrypt';
 
 const em = orm.em;
 
@@ -13,11 +14,24 @@ export const getAllUsers = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
+
+  const plainPassword = req.body.password;
+
+  if (!plainPassword || plainPassword.length < 6) {
+    return res.status(400).send({ message: "Password is required and must be at least 6 characters long" });
+  }
+
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(plainPassword, salt);
+
+
   try {
     const userObject = await em.create(User, {
       name: req.body.name as string,
       email: req.body.email as string,
-      businessId: req.body.businessId as number
+      businessId: req.body.businessId as number,
+      hash,
+      salt
     });
     
     await em.flush();

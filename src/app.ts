@@ -2,10 +2,12 @@ import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from "express";
 import { users } from "./usersdata.js";
 import { router as usersRouter } from "./users/users.router.js";
+import { router as authRouter } from "./users/auth.router.js";
 import { RequestContext } from "@mikro-orm/core";
 import { orm, migrate } from "./shared/orm.js";
 import { businessRouter } from './users/business.router.js';
 import cors from 'cors';
+import { middlewareIsLoggedIn, validateRole } from './encode.js';
 
 const app = express();
 
@@ -25,21 +27,6 @@ app.use((req, _res, next) => {
 app.use((_req, _res, next) => {
   RequestContext.create(orm.em, next);
 })
-// Arrancan middlewares de negocio
-
-const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
-  // const authHeader = req.headers['user_id'];
-  // if (!authHeader) {
-  //   next("unauthorized");
-  // }
-
-  // const currentUser: any = users.find(
-  //   (user) => (user.id === parseInt(authHeader! as string))
-  // );
-  // (req as any).currentUser = currentUser;
-
-  next();
-};
 
 const loadBusiness = (req: Request, res: Response, next: NextFunction) => {
   const businessId = parseInt(req.params.id);
@@ -47,9 +34,11 @@ const loadBusiness = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-app.use('/users', isLoggedIn, usersRouter);
+app.use('/auth', authRouter);
+
+app.use('/users', middlewareIsLoggedIn, validateRole("admin"), usersRouter);
 app.use('/business', businessRouter);
-app.use('/business/:id/users', isLoggedIn, loadBusiness, usersRouter);
+app.use('/business/:id/users', middlewareIsLoggedIn, loadBusiness, usersRouter);
 
 
 const handleError = (err: any, req: Request, res: Response, next: NextFunction) => {

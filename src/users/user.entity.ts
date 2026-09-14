@@ -16,6 +16,12 @@ export class User {
   @ManyToOne(() => Business, { nullable: true })
   business?: Rel<Business>;
 
+  @Property({ type: "string", nullable: true })
+  hash?: string;
+
+  @Property({ type: "string", nullable: true })
+  salt?: string;
+
 
   businessId!: number;
 
