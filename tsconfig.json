@@ -5,6 +5,7 @@
     "module": "ES2022",
     "moduleResolution": "bundler",
     "sourceMap": true,
+    "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,6 +16,6 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*", "**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
