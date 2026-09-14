@@ -17,6 +17,7 @@
     "@mikro-orm/decorators": "^7.1.4",
     "@mikro-orm/postgresql": "^7.1.4",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "4.18.2",
     "reflect-metadata": "^0.2.2"
   },
